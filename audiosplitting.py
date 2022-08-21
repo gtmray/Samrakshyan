@@ -5,7 +5,6 @@ import numpy as np
 
 validAudio = lambda audio, amp_threshold: True if audio.max > amp_threshold else False
 def splitAudio(audio_file, export_category, sec_to_split=10):
-
     global temp_n
     temp_n = 0
     mili=1000
