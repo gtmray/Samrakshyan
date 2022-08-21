@@ -12,5 +12,4 @@ classification system to identify bird calls from the audio data-set collected f
 canto.org. This could be achieved by converting the time-domain audio data signal to
 time and frequency domain signal with wavelet transform, generating the scalograms
 and feeding it to the deep learning model architecture like efficientNet which is based
-on a convolutional neural network. A genetic algorithm can be used for parameter op-
-timization.
+on a convolutional neural network. A genetic algorithm can be used for parameter optimization.
