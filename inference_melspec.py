@@ -137,7 +137,7 @@ def prediction(model_dir, inference_data_path, img_size):
         print(output)
     result = max(results)
     
-    Remove the temporary splitted audio and mfcc images
+    # Remove the temporary splitted audio and mfcc images
     for i in os.listdir(inference_data_path):
         os.remove(os.path.join(inference_data_path, i))
     return results
@@ -155,4 +155,4 @@ SplitAudio(raw_data_path)
 create_features(inference_data_path)
 result = prediction(model_dir, inference_data_path, img_size)
 
-print(f"The predicted audio is of: " {max(result)})
+print(f"The predicted audio is of: {max(result)}")
