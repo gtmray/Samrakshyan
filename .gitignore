@@ -5,3 +5,4 @@ model
 testing.py
 audio
 tmp/inference
+__pycache__
