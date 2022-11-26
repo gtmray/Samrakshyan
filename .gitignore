@@ -2,3 +2,5 @@ env
 charaNet
 node_modules
 model
+testing.py
+audio
