@@ -4,4 +4,4 @@ node_modules
 model
 testing.py
 audio
-tmp
+tmp/inference
