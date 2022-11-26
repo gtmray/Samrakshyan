@@ -3,8 +3,7 @@ from uuid import uuid4
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-import sys
-
+# import sys
 import numpy as np
 import io
 import librosa
@@ -16,10 +15,18 @@ from tensorflow.keras.models import load_model
 
 from pydub import AudioSegment
 import math
-import shutil
 
 import warnings
 warnings.filterwarnings("ignore")
+
+img_size = (128, 128)
+
+DATA_PATH = 'charaNet'
+BIRDS = os.listdir(f'{DATA_PATH}/train')
+model_dir = 'model/CNMelSpec_Model'
+# model_dir = sys.argv[1]
+inference_data_path = 'tmp/inference/'
+# raw_data_path = 'audio/XC98609 -original.mp3aug.wav'
 
 # Variables for feature extraction
 SAMPLE_RATE = 32000
@@ -33,9 +40,6 @@ WINDOW_TYPE = 'hann'
 FEATURE = 'mel'      
 FMIN = 500
 FMAX = 12500
-
-DATA_PATH = 'charaNet'
-BIRDS = os.listdir(f'{DATA_PATH}/train')
 
 def SplitAudio(audio_file, sec_to_split=10):
     
@@ -141,12 +145,6 @@ def prediction(model_dir, inference_data_path, img_size):
     for i in os.listdir(inference_data_path):
         os.remove(os.path.join(inference_data_path, i))
     return results
-
-model_dir = 'model/CNMelSpec_Model'
-inference_data_path = 'tmp/inference/'
-# raw_data_path = 'audio/XC98609 -original.mp3aug.wav'
-
-img_size = (128, 128)
 
 if 'tmp' not in os.listdir('./'):
     os.makedirs(inference_data_path)
