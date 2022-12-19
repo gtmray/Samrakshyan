@@ -22,7 +22,9 @@ warnings.filterwarnings("ignore")
 img_size = (128, 128)
 
 DATA_PATH = 'charaNet'
-BIRDS = os.listdir(f'{DATA_PATH}/train')
+with open('birds.txt') as f:
+    BIRDS = f.read()
+BIRDS = BIRDS.split(',')
 model_dir = 'model/CNMelSpec_Model'
 # model_dir = sys.argv[1]
 inference_data_path = 'tmp/inference/'
@@ -162,7 +164,7 @@ app = FastAPI()
 
 @app.get("/")
 def readroot():
-    return {"ping": "pong"}
+    return {"Mike check": "Mike is okay"}
 
 @app.post("/files/", tags=["audioupload"])
 async def upload_file(file: UploadFile):    
@@ -181,4 +183,4 @@ def get_token():
      }
 
 if __name__ == "__main__":
-    uvicorn.run(debug=True)
+    uvicorn.run(host='0.0.0.0', debug=True)

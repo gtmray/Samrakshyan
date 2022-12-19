@@ -1,0 +1,8 @@
+frontend/
+node_modules
+charaNet
+audio
+documentation
+__pycache__
+env
+database.sql
