@@ -15,3 +15,17 @@ sudo docker run -p 8000:80 samrakshyan
 
 Check active containers:
 sudo docker ps -a
+
+Docker push to DockerHub:
+sudo docker tag samrakshyan rewangtm/samrakshyan:latest
+sudo docker login
+sudo docker push rewangtm/samrakshyan:latest
+
+Docker install:
+sudo apt-get update
+sudo apt install docker.io
+sudo snap install docker
+
+Docker pull:
+sudo docker pull rewangtm/samrakshyan:latest
+

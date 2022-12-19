@@ -16,5 +16,5 @@ RUN pip install librosa==0.9.2
 RUN pip install matplotlib==3.5.3
 RUN pip install pydub==0.25.1
 # EXPOSE 8000
-CMD ["uvicorn", "deployment:app", "--host", "0.0.0.0", "--port", "80"]
-    
+# CMD ["uvicorn", "deployment:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["nohup", "python3", "-m", "uvicorn", "deployment:app", "--reload", "--host", "0.0.0.0", "--port", "80"]
