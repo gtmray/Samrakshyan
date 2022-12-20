@@ -12,7 +12,8 @@ Run docker image:
 <!-- sudo docker run -it --name sam -p 8000:8000 samrakshyan -->
 <!-- sudo docker run -d -p 8000:80 samrakshyan -->
 sudo docker run -p 8000:80 samrakshyan 
-
+sudo docker run -p 8000:80 rewangtm/samrakshyan
+ 
 Check active containers:
 sudo docker ps -a
 
