@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from tensorflow.keras.applications.efficientnet import preprocess_input
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.models import load_model
+from tensorflow.keras.layers import Rescaling
 
 from pydub import AudioSegment
 import math
@@ -35,8 +36,9 @@ FEATURE = 'mel'
 FMIN = 500
 FMAX = 12500
 
-DATA_PATH = 'charaNet'
-BIRDS = os.listdir(f'{DATA_PATH}/train')
+with open('birds.txt') as f:
+    BIRDS = f.read()
+BIRDS = BIRDS.split(',')
 
 def SplitAudio(audio_file, sec_to_split=10):
     
@@ -108,8 +110,8 @@ def create_features(inference_data_path):
                                             fmax=FMAX) 
 
         fig = plt.figure(figsize=(10, 4))
-        librosa.display.specshow(librosa.power_to_db(S**2,ref=np.max), fmin=FMIN,y_axis='linear')
-        # plt.colorbar(format='%+2.0f dB')
+        mel_spec = librosa.power_to_db(S, ref=np.max) 
+        librosa.display.specshow(mel_spec, fmin=FMIN,y_axis='linear')
         plt.axis(False)
         plt.tight_layout()
         # plt.show()
@@ -122,6 +124,8 @@ def preprocess_img(image_dir, img_size):
     img = image.load_img(image_dir, target_size = (img_width, img_height))
     img = image.img_to_array(img)
     img = np.expand_dims(img, axis = 0)
+    norm = Rescaling(1./255)
+    img = norm(img)
     img = preprocess_input(img) 
     return img
 
