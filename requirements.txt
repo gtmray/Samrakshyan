@@ -17,6 +17,7 @@ google-auth-oauthlib==0.4.6
 google-pasta==0.2.0
 grpcio==1.47.0
 h5py==3.7.0
+httpx==0.21.1
 idna==3.3
 importlib-metadata==4.12.0
 joblib==1.1.0
@@ -55,6 +56,7 @@ scipy==1.9.0
 seaborn==0.11.2
 six==1.16.0
 SoundFile==0.10.3.post1
+sqlalchemy==1.4.45
 tensorboard==2.9.1
 tensorboard-data-server==0.6.1
 tensorboard-plugin-wit==1.8.1
@@ -68,3 +70,7 @@ urllib3==1.26.11
 Werkzeug==2.2.2
 wrapt==1.14.1
 zipp==3.8.1
+db~=0.1.1
+pydantic~=1.9.2
+uvicorn~=0.18.3
+fastapi~=0.81.0
