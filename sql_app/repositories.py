@@ -8,7 +8,8 @@ from . import models, schemas
 class ItemRepo:
 
     async def create(db: Session, item: schemas.ItemCreate):
-        db_item = models.Item(name=item.name, imageUrl=item.imageUrl, description=item.description, audioUrl=item.audioUrl,
+        db_item = models.Item(name=item.name.lower(), imageUrl=item.imageUrl, description=item.description,
+                              audioUrl=item.audioUrl,
                               id=str(uuid4()))
         db.add(db_item)
         db.commit()
@@ -18,8 +19,8 @@ class ItemRepo:
     def fetch_by_id(db: Session, _id):
         return db.query(models.Item).filter(models.Item.id == _id).first()
 
-    def fetch_by_name(db: Session, name):
-        return db.query(models.Item).filter(models.Item.name == name).first()
+    def fetch_by_name(db: Session, name: str):
+        return db.query(models.Item).filter(models.Item.name == name.lower()).first()
 
     def fetch_all(db: Session, skip: int = 0, limit: int = 100):
         return db.query(models.Item).offset(skip).limit(limit).all()

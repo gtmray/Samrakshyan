@@ -10,10 +10,14 @@ class ItemBase(BaseModel):
     audioUrl: str
 
 
+# inherit from ItemBase
+# have all the attributes of the Parent class
+#  plus any additional data (attributes) needed for creation
 class ItemCreate(ItemBase):
     pass
 
 
+# read the data from the database and returning it from the API
 class Item(ItemBase):
     id: str
 

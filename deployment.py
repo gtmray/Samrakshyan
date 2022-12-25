@@ -180,6 +180,7 @@ def predict_bird(byte_audio):
 
 
 app = FastAPI()
+# create all the tables in the database
 models.Base.metadata.create_all(bind=engine)
 
 
@@ -229,7 +230,7 @@ async def create_item(item_request: schemas.ItemCreate, db: Session = Depends(ge
 
     db_item = ItemRepo.fetch_by_name(db, name=item_request.name)
     if db_item:
-        raise HTTPException(status_code=400, detail="Item already exists!")
+        raise HTTPException(status_code=400, detail="Item with given name already exists!")
 
     return await ItemRepo.create(db=db, item=item_request)
 
@@ -240,6 +241,17 @@ def get_all_items(db: Session = Depends(get_db)):
     Get all the Items stored in database
     """
     return ItemRepo.fetch_all(db)
+
+
+@app.get('/items/{name}', tags=["Birds_items"], response_model=schemas.Item)
+def get_item(item_name: str, db: Session = Depends(get_db)):
+    """
+    Get the Item with the given name provided by User stored in database
+    """
+    db_item = ItemRepo.fetch_by_name(db, item_name)
+    if db_item is None:
+        raise HTTPException(status_code=404, detail="Item not found with the given name")
+    return db_item
 
 
 @app.get('/items/{item_id}', tags=["Birds_items"], response_model=schemas.Item)
