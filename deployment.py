@@ -4,6 +4,8 @@ from fastapi import FastAPI, File, UploadFile, Depends, HTTPException
 from uuid import uuid4
 import os
 from fastapi.encoders import jsonable_encoder
+from starlette.responses import FileResponse
+
 from db import get_db, engine
 from sql_app.repositories import ItemRepo
 from fastapi.responses import JSONResponse
@@ -222,17 +224,23 @@ def get_token():
     }
 
 
+@app.get('/media', tags=["media"])
+def get_media(media_path):
+    return FileResponse(media_path)
+
+
 @app.post('/items', tags=["Birds_items"], response_model=schemas.Item, status_code=201)
-async def create_item(item_request: schemas.ItemCreate, db: Session = Depends(get_db)):
+async def create_item(birdname: str, image: UploadFile, audio: UploadFile, description: str,
+                      db: Session = Depends(get_db)):
     """
     Create an Item and store it in the database
     """
 
-    db_item = ItemRepo.fetch_by_name(db, name=item_request.name)
+    db_item = ItemRepo.fetch_by_name(db, bird_name=birdname)
     if db_item:
         raise HTTPException(status_code=400, detail="Item with given name already exists!")
 
-    return await ItemRepo.create(db=db, item=item_request)
+    return await ItemRepo.create(db=db, bird_name=birdname, image=image, audio=audio, description=description)
 
 
 @app.get('/items', tags=["Birds_items"], response_model=List[schemas.Item])
@@ -243,8 +251,8 @@ def get_all_items(db: Session = Depends(get_db)):
     return ItemRepo.fetch_all(db)
 
 
-@app.get('/items/{name}', tags=["Birds_items"], response_model=schemas.Item)
-def get_item(item_name: str, db: Session = Depends(get_db)):
+@app.get('/items/name/{item_name}', tags=["Birds_items"])
+def get_item_name(item_name: str, db: Session = Depends(get_db)):
     """
     Get the Item with the given name provided by User stored in database
     """
@@ -254,8 +262,8 @@ def get_item(item_name: str, db: Session = Depends(get_db)):
     return db_item
 
 
-@app.get('/items/{item_id}', tags=["Birds_items"], response_model=schemas.Item)
-def get_item(item_id: str, db: Session = Depends(get_db)):
+@app.get('/items/id/{item_id}', tags=["Birds_items"], response_model=schemas.Item)
+def get_item_id(item_id: str, db: Session = Depends(get_db)):
     """
     Get the Item with the given ID provided by User stored in database
     """
@@ -273,6 +281,8 @@ async def delete_item(item_id: str, db: Session = Depends(get_db)):
     db_item = ItemRepo.fetch_by_id(db, item_id)
     if db_item is None:
         raise HTTPException(status_code=404, detail="Item not found with the given ID")
+    os.remove(db_item.image_path)
+    os.remove(db_item.audio_path)
     await ItemRepo.delete(db, item_id)
     return "Item deleted successfully!"
 
@@ -285,10 +295,10 @@ async def update_item(item_id: str, item_request: schemas.Item, db: Session = De
     db_item = ItemRepo.fetch_by_id(db, item_id)
     if db_item:
         update_item_encoded = jsonable_encoder(item_request)
-        db_item.name = update_item_encoded['name']
-        db_item.imageUrl = update_item_encoded['imageUrl']
+        db_item.name = update_item_encoded['bird_name']
+        db_item.image_path = update_item_encoded['image_path']
         db_item.description = update_item_encoded['description']
-        db_item.audioUrl = update_item_encoded['audioUrl']
+        db_item.audio_path = update_item_encoded['audio_path']
         return await ItemRepo.update(db=db, item_data=db_item)
     else:
         raise HTTPException(status_code=400, detail="Item not found with the given ID")
