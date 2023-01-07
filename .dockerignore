@@ -8,3 +8,6 @@ env
 database.sql
 .idea
 CharaNetMelSpec
+model/CNMFCC_Model
+model/CNMelSpecVanilla_Model
+sql_app
