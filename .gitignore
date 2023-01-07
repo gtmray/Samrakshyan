@@ -7,3 +7,5 @@ audio
 tmp/inference
 __pycache__/
 .idea
+rough.py
+CharaNetMelSpec

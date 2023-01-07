@@ -1,8 +1,12 @@
-# Inference
-
-# !pip install pydub
+from fastapi import FastAPI, File, UploadFile
+import uvicorn as uvicorn
+from uuid import uuid4
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
+# import sys
 import numpy as np
+import io
 import librosa
 import librosa.display
 import matplotlib.pyplot as plt
@@ -17,6 +21,17 @@ import math
 import warnings
 warnings.filterwarnings("ignore")
 
+img_size = (128, 128)
+
+DATA_PATH = 'charaNet'
+with open('birds.txt') as f:
+    BIRDS = f.read()
+BIRDS = BIRDS.split(',')
+model_dir = 'model/CNMelSpec_Model'
+# model_dir = sys.argv[1]
+inference_data_path = 'tmp/inference/'
+# raw_data_path = 'audio/XC98609 -original.mp3aug.wav'
+
 # Variables for feature extraction
 SAMPLE_RATE = 32000
 SPEC_SHAPE = (48, 128) # height x width
@@ -30,25 +45,6 @@ FEATURE = 'mel'
 FMIN = 500
 FMAX = 12500
 
-with open('birds.txt') as f:
-    BIRDS = f.read()
-BIRDS = BIRDS.split(',')
-
-# BIRDS = ['Spotted Dove', 'Swamp Francolin', 'Rufous-necked Hornbill',
-#  'Jerdon_s Babbler', 'Rose-ringed Parakeet', 'Wood Snipe',
-#  'Large-billed Crow', 'Greater Spotted Eagle', 'Saker Falcon',
-#  'Rufous Treepie', 'Indian Spotted Eagle', 'Satyr Tragopan',
-#  'Steppe Eagle', 'House Crow', 'Long-tailed Duck',
-#  'Asian Koel', 'Red-billed Blue Magpie', 'Pallas_s Fish Eagle',
-#  'Cheer Pheasant', 'Rustic Bunting', 'Grey Treepie',
-#  'Sarus Crane', 'Spiny Babbler', 'Kashmir Flycatcher',
-#  'Swamp Grass-babbler', 'Great Slaty Woodpecker', 'Eastern Imperial Eagle',
-#  'Black Kite', 'Black-necked crane', 'Common Wood Pigeon',
-#  'Bristled Grassbird', 'Grey-sided Thrush', 'House Sparrow',
-#  'Grey-crowned Prinia', 'White-throated Bushchat', 'Himalayan Monal',
-#  'Black-breasted Parrotbill', 'Egyptian Vulture', 'Common Pochard',
-#  'Common Cuckoo', 'Slender-billed Babbler']
-
 def SplitAudio(audio_file, sec_to_split=10):
     
     validAudio = lambda audio, amp_threshold: True if audio.max > amp_threshold else False
@@ -57,7 +53,8 @@ def SplitAudio(audio_file, sec_to_split=10):
     temp_n = 0
     mili=1000
     export_folder = f'tmp/inference/'
-    export_name = audio_file.split('/')[-1]
+    # export_name = audio_file.split('/')[-1]
+    export_name = 'inf_file'
     exportFormat = 'mp3'
     try:
         audio = AudioSegment.from_mp3(audio_file)
@@ -108,7 +105,7 @@ def create_features(inference_data_path):
     count = 0
     for aud in audio_files:
 
-        signal, sr = librosa.load(os.path.join(inference_data_path, aud),duration=10, sr=SAMPLE_RATE) # sr = sampling rate
+        signal, sr = librosa.load(os.path.join(inference_data_path, aud),duration=10, sr=SAMPLE_RATE) 
         # Plot mel-spectrogram
         S = librosa.feature.melspectrogram(y=signal,
                                            sr=SAMPLE_RATE,
@@ -155,18 +152,39 @@ def prediction(model_dir, inference_data_path, img_size):
         os.remove(os.path.join(inference_data_path, i))
     return results
 
-model_dir = 'model/CNMelSpec_Model'
-inference_data_path = 'tmp/inference/'
-# raw_data_path = 'audio/XC98609 -original.mp3aug.wav'
-raw_data_path = 'audio/l3.mp3'
-img_size = (128, 128)
-
 if 'tmp' not in os.listdir('./'):
     os.makedirs(inference_data_path)
 
-SplitAudio(raw_data_path)
-create_features(inference_data_path)
-result = prediction(model_dir, inference_data_path, img_size)
 
-print(f"The predicted audio is of: {max(result)}")
+def predict_bird(byte_audio):
+    s = io.BytesIO(byte_audio)
+    SplitAudio(s)
+    create_features(inference_data_path)
+    result = prediction(model_dir, inference_data_path, img_size)
 
+    return max(result)
+
+app = FastAPI()
+
+@app.get("/")
+def readroot():
+    return {"Mike check": "Mike is okay"}
+
+@app.post("/files/", tags=["audioupload"])
+async def upload_file(file: UploadFile):    
+    try:
+        result = predict_bird(await file.read())
+    except Exception as e:
+        print(e)
+        result = "Unknown"
+    
+    return {"Predicted": result}
+
+@app.get("/uuid",tags=["Token generate"])
+def get_token():
+     return {
+        "token":str(uuid4())
+     }
+
+if __name__ == "__main__":
+    uvicorn.run(host='0.0.0.0', debug=True)
