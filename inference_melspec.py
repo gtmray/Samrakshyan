@@ -13,7 +13,6 @@ from tensorflow.keras.layers import Rescaling
 
 from pydub import AudioSegment
 import math
-import shutil
 
 import warnings
 warnings.filterwarnings("ignore")
