@@ -78,7 +78,7 @@ def create_features(inference_data_path):
     audio_files = [f for f in os.listdir(inference_data_path) if f.split('.')[-1]=='mp3']
     count = 0
     for aud in audio_files:
-        signal, sr = librosa.load(os.path.join(inference_data_path, aud),duration=10, sr=SAMPLE_RATE) # sr = sampling rate
+        signal, sr = librosa.load(os.path.join(inference_data_path, aud),duration=10) # sr = sampling rate
 
         # Plot MFCCs
         mfccs = librosa.feature.mfcc(y=signal, n_mfcc=13, sr=sr) 
