@@ -1,13 +1,12 @@
 from typing import List, Optional
-
 from pydantic import BaseModel
 
 
 class ItemBase(BaseModel):
-    name: str
-    imageUrl: str
+    bird_name: str
+    image_path: str
     description: Optional[str] = None
-    audioUrl: str
+    audio_path: str
 
 
 # inherit from ItemBase
