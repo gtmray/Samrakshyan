@@ -24,7 +24,7 @@ class ItemRepo:
             file_object.write(audio.file.read())
         image_item = image_file_location
         audio_item = audio_file_location
-        db_item = models.Item(bird_name=bird_name.lower(), image_path=image_item, description=description,
+        db_item = models.Item(bird_name=bird_name, image_path=image_item, description=description,
                               audio_path=audio_item,
                               id=str(uuid4()))
         db.add(db_item)
