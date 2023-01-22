@@ -3,6 +3,5 @@ charaNet
 node_modules
 model
 testing.py
-audio
 tmp/inference
 __pycache__/
