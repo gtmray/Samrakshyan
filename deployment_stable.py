@@ -1,4 +1,5 @@
 from fastapi import FastAPI, File, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn as uvicorn
 from uuid import uuid4
 import os
@@ -185,6 +186,15 @@ def get_token():
      return {
         "token":str(uuid4())
      }
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 if __name__ == "__main__":
     uvicorn.run(host='0.0.0.0', debug=True)
