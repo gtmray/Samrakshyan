@@ -3,7 +3,7 @@ import librosa
 import numpy as np
 import matplotlib.pyplot as plt
 
-filename = 'largebilled.mp3'
+filename = 'spiny.mp3'
 sampling_rate = 500
 x, sr = librosa.load(filename, sr=sampling_rate)
 
@@ -18,7 +18,14 @@ coef, freqs = pywt.cwt(x, scales, wavelet) # Finding CWT with morlet wavelet
 
 plt.figure(figsize=(20, 10))
 plt.imshow(abs(coef[:, :coef_range]), cmap='coolwarm', aspect='auto')
-plt.axis(False)
+# plt.axis(False)
+
+# Turn off tick labels
+plt.xticks([])
+plt.yticks([])
+plt.xlabel('Time', fontsize=20)
+plt.ylabel('Scales', fontsize=20)
+plt.colorbar()
 plt.tight_layout()
 plt.savefig(f'tmp/scalogram.jpg', bbox_inches='tight', pad_inches=0.0)
 plt.show()

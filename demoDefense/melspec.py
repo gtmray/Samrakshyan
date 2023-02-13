@@ -36,11 +36,18 @@ def mel_features(audio_file_path):
     fig = plt.figure(figsize=(10, 4))
     mel_spec = librosa.power_to_db(S, ref=np.max) 
     librosa.display.specshow(mel_spec, fmin=FMIN,y_axis='linear')
-    plt.axis(False)
+    # plt.axis(False)
+
+    # Turn off tick labels
+    plt.xticks([])
+    plt.yticks([])
+    plt.xlabel('Time', fontsize=15)
+    plt.ylabel('Frequency on the mel scale', fontsize=15)
+    plt.colorbar()
     plt.tight_layout()
     plt.savefig(f'tmp/melspec.jpg')
     plt.show()
     plt.close(fig)
     
-audio_file_path = 'largebilled.mp3'
+audio_file_path = 'bristled/6.mp3'
 mel_features(audio_file_path)

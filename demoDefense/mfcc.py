@@ -21,7 +21,12 @@ def mfcc_features(audio_file_path):
     librosa.display.specshow(mfccs, 
                             x_axis="time", 
                             sr=sr)
-    plt.axis(False)
+    # plt.axis(False)
+    plt.xticks([])
+    plt.yticks([])
+    plt.xlabel('Time')
+    plt.ylabel('Coefficients')
+    plt.colorbar()
     plt.tight_layout()
     plt.savefig(f'tmp/mfcc.jpg')
     plt.show()
