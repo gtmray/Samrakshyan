@@ -49,5 +49,5 @@ def mel_features(audio_file_path):
     plt.show()
     plt.close(fig)
     
-audio_file_path = 'bristled/6.mp3'
+audio_file_path = 'spiny.mp3'
 mel_features(audio_file_path)
